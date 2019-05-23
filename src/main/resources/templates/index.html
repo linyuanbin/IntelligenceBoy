@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!-- saved from url=(0026)https://www.fedrobots.com/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+<title>电影博士小K</title>
+<meta name="keywords" content="前端开发机器人,web前端开发,前端开发工具,前端机器人,前端开发技巧,前端面试题,js,jQuery"/>
+<meta name="description" content="前端开发机器人：回答前端开发领域的知识点、技巧、解决方案、提供各种前端开发工具、工具用法、面试题等。"/>
+<!--<script type="text/javascript" async="" src="css/js">
+</script><script type="text/javascript" async="" src="css/analytics.js">
+	</script><script src="css/hm.js"></script>
+	<script>var searchOK = false;</script>-->
+
+
+<link rel="shortcut icon" href="http://localhost:8080/images/timg.jpg" type="image/x-icon"/>
+
+<link rel="stylesheet" type="text/css" href="css/min.css"/>
+
+	<script type="text/javascript">
+        window.onload = function() {
+
+            var input = document.getElementById('msg_input');//查找缓存
+            document.getElementById('sendbtn').onclick = function() {
+                sendMsg();
+            }
+
+            //enter键 发送
+            document.onkeypress = function(event) {
+                var e = event || window.event;
+                var keycode = e.keyCode || e.which;
+                console.log(e)
+                if (keycode == 13) {//按下enter键
+                    sendMsg()
+                }
+            }
+
+            function sendMsg() {
+                var input = document.getElementById('msg_input');//查找缓存
+                var centerDiv = document.getElementById('content_area');
+                var divs = document.createElement('div');
+                divs.className="dialog_list my_send dialog_list_run";
+                var div1 = document.createElement('div');
+                div1.className="dialog_head";
+                var div2 = document.createElement('div');
+                div2.className="dialog_text_box";
+                var div3 = document.createElement('div');
+                div3.className="dialog_text";
+                div3.innerHTML=input.value;
+                divs.appendChild(div1);
+                div2.appendChild(div3);
+                divs.appendChild(div2);
+                centerDiv.appendChild(divs);
+                divs.scrollIntoView();
+                ajax({
+                    url : '/rest/appleyk/question/query?question='+ input.value,
+                    success : function(res) {
+                        console.log(res);
+                        var divs = document.createElement('div');
+                        divs.className="dialog_list doctor_send dialog_list_run";
+                        var div1 = document.createElement('div');
+                        div1.className="dialog_head";
+                        var div2 = document.createElement('div');
+                        div2.className="dialog_text_box";
+                        var div3 = document.createElement('div');
+                        div3.className="dialog_text";
+                        div3.innerHTML=res;
+                        divs.appendChild(div1);
+                        div2.appendChild(div3);
+                        divs.appendChild(div2);
+                        centerDiv.appendChild(divs);
+                        divs.scrollIntoView();
+                        input.value = '';
+                    }
+                })
+                input.value = '';
+                centerDiv.scrollIntoView();//将元素滚动到可见位置
+            }
+
+        }
+
+        function ajax(obj) {
+            var xhr = null;
+            if (window.ActiveXObject) {
+                xhr = new ActiveXObject('Microsoft.XMLHTTP')
+            } else {
+                xhr = new XMLHttpRequest();
+            }
+
+            //打开与服务器的连接
+            if (obj.method) {
+                xhr.open(obj.method, obj.url, true);
+            } else {
+                xhr.open('get', obj.url, true);
+            }
+            xhr.setRequestHeader("Content-Type",
+                "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("Authorization",
+                "APPCODE 3e9dfb924f464e9593a95f9d2bbf4348")
+
+            xhr.onreadystatechange = function() {
+
+                if (xhr.readyState == 4) {
+                    //数据接收完毕
+                    if (xhr.status == 200) {
+                        //console.log('请求成功',xhr.responseText)
+                        if (obj.success) {
+                            obj.success(xhr.responseText)
+                        }
+
+                    } else {
+                        //console.log(xhr.status,'请求出错')
+                        if (obj.failure) {
+                            obj.failure('请求失败')
+                        }
+                    }
+                }
+            }
+            if (obj.method == undefined || obj.method.toLowerCase() == 'get') {
+                xhr.send(null);
+            } else {
+                xhr.send(obj.params);
+            }
+        }
+	</script>
+
+</head>
+
+<body class="home">
+
+<div class="home_bg_box">
+	<div class="page_bg" id="page_bg"><canvas width="1880" height="924" style="background-color: rgb(0, 0, 0);"></canvas></div>
+	<div class="home_bg home_bg1"></div>
+	<div class="home_bg home_bg2"></div>	
+</div>
+<div class="home_h"><h1>智能问答机器人</h1></div>
+
+<!-- 主体模块 -->
+<div class="page_w">
+	<div class="dialog_all">
+		<div class="dialog_hr" style="height: 655px;"><div></div></div>
+		<div id="content_area" class="dialog_content" style="height: 600px;">
+			<div class="dialog_list doctor_send dialog_list_run">
+				<div class="dialog_head"></div>
+				<div class="dialog_text_box">
+					<div class="dialog_text">您好，我是<span class="c_f00">电影达人</span>
+						<span class="c_999"> — </span>小K</div></div></div>
+
+			<div class="dialog_list doctor_send dialog_list_run">
+				<div class="dialog_head"></div>
+				<div class="dialog_text_box">
+					<div class="dialog_text">想了解关于电影的知识可以问我哦</div></div></div>
+
+			<!--<div class="dialog_list my_send dialog_list_run">
+				<div class="dialog_head"></div>
+				<div class="dialog_text_box"><div class="dialog_text">servlet元素</div></div></div>-->
+
+
+			</div>
+		<div class="dialog_send_box">
+			<div class="dialog_send">
+				<textarea id="msg_input" class="dialog_input js_dialog_input" placeholder="请输入您的问题 或 关键词"></textarea>
+				<div id="sendbtn" class="dialog_btn_send js_dialog_send"><span>发送</span></div>
+				<dl class="hot_key">
+					<dt>热门关键词：</dt>
+					<dd><span class="active">梁朝伟</span><span>李连杰</span><span>英雄</span><span>恐怖</span></dd>
+				</dl>
+				<span class="btn_cmd" title="机器人的操作命令">Hi</span>
+			</div>
+		</div>
+	</div>
+</div>
+<br/>
+<br/>
+<br/>
+<!--
+
+<div class="edit_box">
+		<dl class="table_dl">
+			<dt class="bitian">知识类型：</dt>
+			<dd>
+				<select class="js_ui_select" id="reply_type">
+					<option value="Js">梁朝伟</option>
+					<option value="Css">李连杰</option>
+					<option value="Html">英雄</option>
+				</select>
+				<span class="c_f00"></span>
+			</dd>
+		</dl>
+		
+        <dl class="table_dl">
+			<dt class="bitian">标题描述：</dt>
+			<dd>
+				<input class="input js_yz" id="reply_describe" yz-type="text" type="text" placeholder="请输入知识标题简述，用于智能检索。"/>
+				<span class="c_f00"></span>
+			</dd>
+		</dl>
+        
+        <dl class="table_dl">
+            <dt class="bitian">详细解答：</dt>
+            <dd>
+            	<textarea class="textarea js_yz" id="reply_content" yz-type="longtext" type="text" placeholder="请输入知识点详细解答，可以用//注释来解释您的代码!"></textarea>
+            	<br/>
+            	<span class="c_f00"></span>
+            </dd>
+        </dl>
+        
+        <span class="btn btn_big btn_edit_submit">提交审核</span><span class="btn_r_tip">您编辑的知识会经过 前端大牛 人工审核。</span>
+</div>
+-->
+
+<!--<script src="css/min(1).css"></script>-->
+<!--
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4c7919e4c65e76e3d363decd3180066c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<script async="" src="css/js(1)"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-135292923-1', { 'optimize_id': 'GTM-52GLWT3'});
+</script>-->
+</body></html>
