@@ -1,8 +1,17 @@
-package com.lin.process;
+package com.appleyk.process;
 
-import com.hankcs.hanlp.HanLP;
-import com.hankcs.hanlp.seg.Segment;
-import com.hankcs.hanlp.seg.common.Term;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -11,12 +20,15 @@ import org.apache.spark.mllib.classification.NaiveBayesModel;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.regression.LabeledPoint;
-import java.io.*;
-import java.util.*;
+
+import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.seg.Segment;
+import com.hankcs.hanlp.seg.common.Term;
 
 /**
  * Spark贝叶斯分类器 + HanLP分词器 + 实现问题语句的抽象+模板匹配+关键性语句还原
- * @author  yuanbin.lin
+ * @blob   http://blog.csdn.net/appleyk
+ * @date   2018年5月9日-上午10:07:52
  */
 public class ModelProcess {
 
@@ -181,7 +193,6 @@ public class ModelProcess {
 		String line;
 		try {
 			while ((line = br.readLine()) != null) {
-				//line = new String(line.getBytes("GBK"),"UTF-8");
 				String[] tokens = line.split(":");
 				int index = Integer.parseInt(tokens[0]);
 				String word = tokens[1];
@@ -203,17 +214,13 @@ public class ModelProcess {
 	 */
 	public  String loadFile(String filename) throws IOException {
 		File file = new File(rootDirPath + filename);
-		//FileInputStream in = new FileInputStream(file);
-		//InputStreamReader i= new InputStreamReader(in,"UTF-8");
 		BufferedReader br = new BufferedReader(new FileReader(file));
-		//BufferedReader br = new BufferedReader(i);
 		String content = "";
 		String line;
 		while ((line = br.readLine()) != null) {
 			/**
 			 * 文本的换行符暂定用"`"代替
 			 */
-			//line = new String(line.getBytes("GBK"),"UTF-8");
 			content += line + "`";
 		}
 		/**
@@ -502,7 +509,6 @@ public class ModelProcess {
 		String line;
 		try {
 			while ((line = br.readLine()) != null) {
-				//line = new String(line.getBytes("GBK"),"UTF-8");
 				String[] tokens = line.split(":");
 				double index = Double.valueOf(tokens[0]);
 				String pattern = tokens[1];
@@ -535,10 +541,9 @@ public class ModelProcess {
 		double index = nbModel.predict(v);
 		modelIndex = (int)index;
 		System.out.println("the model index is " + index);	
-//		Vector vRes = nbModel.predictProbabilities(v);
-//		System.out.println("问题模板分类【0】概率："+vRes.toArray()[0]);
-//		System.out.println("问题模板分类【13】概率："+vRes.toArray()[13]);
-		//String res = new String(questionsPattern.get(index).getBytes(),"iso-8859-1");
+		Vector vRes = nbModel.predictProbabilities(v);
+		System.out.println("问题模板分类【0】概率："+vRes.toArray()[0]);
+		System.out.println("问题模板分类【13】概率："+vRes.toArray()[13]);
 		return questionsPattern.get(index);
 	}
 
